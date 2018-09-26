@@ -68,5 +68,7 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string> Select a photo to analyze with the ML Tool </string>
 </dict>
 </plist>

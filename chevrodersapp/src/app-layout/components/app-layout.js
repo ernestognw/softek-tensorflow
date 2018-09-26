@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Image } from "react-native";
 import {
   Container,
   Header,
@@ -9,7 +9,8 @@ import {
   Footer,
   FooterTab,
   Left,
-  Content
+  Content,
+  Body
 } from "native-base";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -17,9 +18,11 @@ function AppLayout(props) {
   return (
     <Container style={styles.container}>
       <Header>
-        <Left>
-          <Title style={styles.title}>Chevroders</Title>
-        </Left>
+        <Left/>
+        <Body>
+          <Image source={require('../../assets/logotipoblack.png')} style={styles.image} />
+        </Body>
+        <Right/>
       </Header>
       <Content padder>{props.children}</Content>
       <LinearGradient
@@ -27,9 +30,15 @@ function AppLayout(props) {
         start={{x: 0, y: 0.25}} end={{x: 1, y: 0.5}}
         colors={["#A875FF", "#39A1F7"]}
       >
+      {
+        props.image ?
         <Button style={styles.button} full>
           <Text style={styles.buttonLabel}>Subir imagen</Text>
+        </Button> :
+        <Button onPress={() => { props.toggleModal(); props.getPhotos() }} style={styles.button} full>
+          <Text style={styles.buttonLabel}>Buscar imagen</Text>
         </Button>
+      }
       </LinearGradient>
     </Container>
   );
@@ -56,8 +65,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    left: 20,
-  }
+  },
+  image: {
+    height: 70,
+    resizeMode: 'contain',
+  },
 });
 
 export default AppLayout;
