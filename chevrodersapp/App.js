@@ -3,11 +3,13 @@ import getTheme from "./native-base-theme/components";
 import AppLayout from "./src/app-layout/components/app-layout";
 import ImageCard from "./src/app-layout/containers/image-card";
 import custom from "./native-base-theme/variables/custom";
-import { StyleProvider, Button } from "native-base";
+import { StyleProvider, Button, Content, Title } from "native-base";
 import { View, StyleSheet, Modal, ScrollView, CameraRoll } from 'react-native';
-import { Text } from 'react-native';
 import PhotosModal from './src/app-layout/components/photos-modal';
 import RNFetchBlob from 'rn-fetch-blob'
+import EmptyState from './src/app-layout/components/empty-state';
+
+console.disableYellowBox = true;
 
 class App extends Component {
   state = {
@@ -15,6 +17,7 @@ class App extends Component {
     photos: [],
     index: null,
     selectedImage: null,
+    message: null,
   };
 
   toggleModal = () => {
@@ -24,7 +27,7 @@ class App extends Component {
   getPhotos = () => {
     CameraRoll.getPhotos({
       first: 20,
-      assetType: "All"
+      assetType: "Photos"
     }).then(r => {
       console.log(r);
       this.setState({ photos: r.edges });
@@ -44,14 +47,25 @@ class App extends Component {
   }
 
   deletePhoto = () => {
-    this.setState({ selectedImage: null, index: null })
+    this.setState({ selectedImage: null, index: null, message: null, })
   }
 
-  sendPhoto = () => { // 
+  sendPhoto = () => {
+    console.log('funciona')
+    const url = 'http://localhost:8000/predict/predict_img';
     const image = this.state.photos[this.state.index].node.image.uri
     RNFetchBlob.fs.readFile(image, 'base64')
     .then((data) => {
-      console.log(data)
+      console.log(data.length / 1024 + ' kB')
+      fetch(url, {
+        method: 'post',
+        body: data
+      }).then(res => {
+        console.log(res)
+        let data = JSON.parse(res._bodyText)
+        console.log(data)
+        this.setState({message:data.saludos})
+      });
     })
   }
 
@@ -59,14 +73,27 @@ class App extends Component {
     return (
       <StyleProvider style={getTheme(custom)}>
         <AppLayout
-          toggleModal={this.toggleModal}
-          getPhotos={this.getPhotos}
           image={this.state.selectedImage}
+          sendPhoto={this.sendPhoto}
+          toggleModal={this.toggleModal}
         >
-          <ImageCard 
-            image={this.state.selectedImage}
-            deletePhoto={this.deletePhoto}
+        {
+          this.state.selectedImage ? 
+          <Content padder>
+            <ImageCard 
+              image={this.state.selectedImage}
+              deletePhoto={this.deletePhoto}
+            />
+            {
+              this.state.message &&
+              <Title>{this.state.message}</Title>
+            }
+          </Content> :
+          <EmptyState 
+            toggleModal={this.toggleModal}
+            getPhotos={this.getPhotos}
           />
+        }
           <PhotosModal
             getPhotos={this.getPhotos}
             toggleModal={this.toggleModal}

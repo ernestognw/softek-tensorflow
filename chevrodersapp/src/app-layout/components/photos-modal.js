@@ -1,6 +1,7 @@
 import React from "react";
-import { Text, Modal, Dimensions, View, Image, TouchableHighlight, ScrollView, StyleSheet } from 'react-native';
-import { Button } from 'native-base'; 
+import { Text, Modal, SafeAreaView, Dimensions, View, Image, TouchableHighlight, ScrollView, StyleSheet } from 'react-native';
+import { Button, Icon } from 'native-base'; 
+import LinearGradient from 'react-native-linear-gradient';
 
 const { width } = Dimensions.get('window');
 
@@ -12,9 +13,10 @@ function PhotosModal(props) {
       visible={props.modalVisible}
       onRequestClose={() => console.log("closed")}
     >
+    <SafeAreaView/>
       <View style={styles.modalContainer}>
-        <Button onPress={props.toggleModal}>
-          <Text>Close</Text>
+        <Button style={styles.closeButton} onPress={props.toggleModal}>
+          <Icon style={styles.closeIcon} name="clear" />
         </Button>
         <ScrollView contentContainerStyle={styles.scrollView}>
           {props.photos.map((p, i) => {
@@ -37,11 +39,15 @@ function PhotosModal(props) {
           })}
         </ScrollView>
         {props.index !== null && (
-          <View style={styles.shareButton}>
-            <Button onPress={() => {props.setPhoto(); props.toggleModal();}} >
-              <Text>Set photo</Text>
+          <LinearGradient
+            style={styles.buttonContainer}
+            start={{x: 0, y: 0.25}} end={{x: 1, y: 0.5}}
+            colors={["#A875FF", "#39A1F7"]}
+          >
+            <Button onPress={() => { props.setPhoto(); props.toggleModal() }} style={styles.button} full>
+              <Text style={styles.buttonLabel}>Seleccionar imagen</Text>
             </Button>
-          </View>
+          </LinearGradient>
         )}
       </View>
     </Modal>
@@ -55,19 +61,31 @@ styles = StyleSheet.create({
     alignItems: 'center'
   },
   modalContainer: {
-    paddingTop: 20,
+    paddingTop: 5,
     flex: 1
   },
   scrollView: {
     flexWrap: 'wrap',
     flexDirection: 'row'
   },
-  shareButton: {
-    position: 'absolute',
-    width,
-    padding: 10,
-    bottom: 0,
-    left: 0
+  buttonContainer: {
+    width: "88%",
+    marginRight: "auto",
+    marginLeft: "auto",
+    marginBottom: 30,
+    borderRadius: 4
+  },
+  buttonLabel: {
+    fontSize: 17,
+    fontWeight: "500",
+    color: "white"
+  },
+  closeIcon: {
+    color: '#535D7E',
+  },
+  closeButton: {
+    width: '100%',
+    justifyContent: 'flex-end',
   }
 })
 

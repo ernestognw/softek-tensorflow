@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
 import {
   Container,
@@ -24,22 +24,26 @@ function AppLayout(props) {
         </Body>
         <Right/>
       </Header>
-      <Content padder>{props.children}</Content>
-      <LinearGradient
-        style={styles.buttonContainer}
-        start={{x: 0, y: 0.25}} end={{x: 1, y: 0.5}}
-        colors={["#A875FF", "#39A1F7"]}
-      >
+      {props.children}
       {
-        props.image ?
-        <Button style={styles.button} full>
-          <Text style={styles.buttonLabel}>Subir imagen</Text>
-        </Button> :
-        <Button onPress={() => { props.toggleModal(); props.getPhotos() }} style={styles.button} full>
-          <Text style={styles.buttonLabel}>Buscar imagen</Text>
-        </Button>
+        props.image &&
+        <Fragment>
+        <LinearGradient
+          style={styles.buttonContainer}
+          start={{x: 0, y: 0.25}} end={{x: 1, y: 0.5}}
+          colors={["#A875FF", "#39A1F7"]}
+        >
+          <Button onPress={props.sendPhoto} style={styles.button} full>
+            <Text style={styles.buttonLabel}>Subir imagen</Text>
+          </Button> 
+        </LinearGradient>
+        <View style={styles.anotherContainer}>
+          <Button onPress={props.toggleModal} style={styles.button} full primary>
+            <Text style={styles.anotherLabel}>Cambiar imagen</Text>
+          </Button> 
+        </View>
+        </Fragment>
       }
-      </LinearGradient>
     </Container>
   );
 }
@@ -52,7 +56,7 @@ const styles = StyleSheet.create({
     width: "88%",
     marginRight: "auto",
     marginLeft: "auto",
-    marginBottom: 30,
+    marginBottom: 10,
     borderRadius: 4
   },
   button: {
@@ -70,6 +74,20 @@ const styles = StyleSheet.create({
     height: 70,
     resizeMode: 'contain',
   },
+  anotherContainer: {
+    width: "88%",
+    marginRight: "auto",
+    marginLeft: "auto",
+    marginBottom: 30,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: "#535D7E"
+  },
+  anotherLabel: {
+    fontSize: 17,
+    fontWeight: "500",
+    color: "#535D7E"
+  }
 });
 
 export default AppLayout;

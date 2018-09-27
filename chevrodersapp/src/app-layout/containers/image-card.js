@@ -5,21 +5,17 @@ import { Card, Text, CardItem, Icon } from "native-base";
 class ImageCard extends Component {
   render() {
     return (
-      <Fragment>
-        {this.props.image && (
-          <Card>
-            <CardItem cardBody>
-              <TouchableOpacity
-                onPress={this.props.deletePhoto}
-                style={styles.close}
-              >
-                <Icon style={styles.icon} name="close" />
-              </TouchableOpacity>
-              <Image source={{ uri: this.props.image }} style={styles.image} />
-            </CardItem>
-          </Card>
-        )}
-      </Fragment>
+      <Card>
+        <CardItem cardBody>
+          <TouchableOpacity
+            onPress={this.props.deletePhoto}
+            style={styles.close}
+          >
+            <Icon style={styles.icon} name="close" />
+          </TouchableOpacity>
+          <Image source={{ uri: this.props.image }} style={styles.image} />
+        </CardItem>
+      </Card>
     );
   }
 }
